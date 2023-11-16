@@ -13,48 +13,41 @@ public class Loops : MonoBehaviour
         //TestForLoop();
         SpawnGrenades(420);
     }
-
-    void TestWhileLoop()
-    {
-        int counter = 1;
-        while (counter <= 5)
-        {
-            Debug.Log("Looping x" + counter);
-            counter++;
-        }
-        Debug.Log("No longer looping");
-    }
-
-    void TestForLoop()
-    {
-        for (int counter = 1; counter <= 5; counter++)
-        {
-            Debug.Log("Looping x" + counter);
-        }
-        Debug.Log("No longer looping");
-    }
-
+    
     void SpawnGrenades(int grenadeCount)
     {
-        for (int i = 0; i < grenadeCount; i++)
+        float xMin, xMax, zMin, zMax;
+        xMin = zMin = -10.0f;
+        xMax = zMax = 10.0f;
+
+        // Spawn grenades along the top border
+        for (float x = xMin; x <= xMax; x += 1.0f)
         {
-            for (float j = 0.0f; j < 50.0f; j += 10.0f)
-            {
-                float xMin, xMax, zMin, zMax;
-                xMin = zMin = -100.0f;
-                xMax = zMax = 100.0f;
-                Vector3 grenadePosition = spawnPosition + new Vector3(Random.Range(xMin, xMax), j, Random.Range(zMin, zMax));
-                GameObject clone = Instantiate(grenade, grenadePosition, Quaternion.identity);
-                Destroy(clone, 5.0f);
-            }
+            SpawnGrenade(new Vector3(x, 0.0f, zMax));
+        }
+
+        // Spawn grenades along the bottom border
+        for (float x = xMin; x <= xMax; x += 1.0f)
+        {
+            SpawnGrenade(new Vector3(x, 0.0f, zMin));
+        }
+
+        // Spawn grenades along the left border
+        for (float z = zMin + 1.0f; z <= zMax - 1.0f; z += 1.0f)
+        {
+            SpawnGrenade(new Vector3(xMin, 0.0f, z));
+        }
+
+        // Spawn grenades along the right border
+        for (float z = zMin + 1.0f; z <= zMax - 1.0f; z += 1.0f)
+        {
+            SpawnGrenade(new Vector3(xMax, 0.0f, z));
         }
     }
 
-    private void Update()
+    void SpawnGrenade(Vector3 position)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SpawnGrenades(100);
-        }
+        GameObject clone = Instantiate(grenade, spawnPosition + position, Quaternion.identity);
+        Destroy(clone, 5.0f);
     }
 }
